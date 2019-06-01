@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.imooc.mmall.dao.UserMapper">
+
+    <sql id="Base_Column_List">
+        id, username, password, email, phone, question, answer, role, create_time, update_time
+    </sql>
+
+    <select id="selectNumByUsername" resultType="int">
+        select count(1)
+        from mmall_user
+        where username = #{username}
+    </select>
+
+    <select id="selectNumByEmail" resultType="int">
+        select count(1)
+        from mmall_user
+        where email = #{email}
+    </select>
+
+    <select id="selectByUsernameAndPwd" resultType="user">
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_user
+        where username = #{username}
+        and password = #{password}
+    </select>
+
+    <insert id="insert">
+        insert into mmall_user(<include refid="Base_Column_List"/>)
+        values(#{id}, #{username}, #{password}, #{email}, #{phone}, #{question}, #{answer}, #{role}, now(), now())
+    </insert>
+
+    <select id="selectQuestionByUsername" resultType="string">
+        select question
+        from mmall_user
+        where username = #{username}
+    </select>
+
+    <select id="selectNumByUsernameAndQuestionAndAnswer" resultType="int">
+        select count(1)
+        from mmall_user
+        where username = #{username}
+        and question = #{question}
+        and answer = #{answer}
+    </select>
+
+    <update id="updatePasswordByUsername">
+        update mmall_user
+        set password = #{password}, update_time = now()
+        where username = #{username}
+    </update>
+
+    <select id="selectNumByIdAndPwd" resultType="int">
+        select count(1)
+        from mmall_user
+        where id = #{id}
+        and password = #{password}
+    </select>
+
+    <update id="updateByPrimaryKeySelective">
+        update mmall_user
+        <set>
+            <if test="username != null">username = #{username},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="question != null">question = #{question},</if>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = now(),</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="checkEmailById" resultType="int">
+        select count(1)
+        from mmall_user
+        where email = #{email}
+        and id != #{id}
+    </select>
+
+</mapper>
